@@ -14,7 +14,7 @@ namespace ETradeBackend.Application.Repositories
         bool Update(T model);
         bool UpdateRange(List<T> datas);
         bool Remove(T model);
-        Task<bool> Remove(string id);
+        Task<bool> RemoveAsync(string id);
         bool RemoveRange(List<T> datas);
         Task<int> SaveAsync();
     }

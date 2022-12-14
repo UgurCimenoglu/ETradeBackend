@@ -40,7 +40,7 @@ namespace ETradeBackend.Persistance.Repositories
             return entityEntry != null;
         }
 
-        public async Task<bool> Remove(string id)
+        public async Task<bool> RemoveAsync(string id)
         {
             var data = await Table.FirstOrDefaultAsync(q => q.Id == Guid.Parse(id));
             return Remove(data);
