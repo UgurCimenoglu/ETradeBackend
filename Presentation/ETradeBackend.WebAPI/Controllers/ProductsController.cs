@@ -2,6 +2,7 @@
 using ETradeBackend.Application.Repositories.CustomerRepository;
 using ETradeBackend.Application.Repositories.OrderRepository;
 using ETradeBackend.Application.Repositories.ProductRepository;
+using ETradeBackend.Application.RequestParameters;
 using ETradeBackend.Application.ViewModels.Products;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,38 @@ namespace ETradeBackend.WebAPI.Controllers
     {
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IProductReadRepository _productReadRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IOrderWriteRepository orderWriteRepository, ICustomerWriteRepository customerWriteRepository)
+        public ProductsController(
+            IProductWriteRepository productWriteRepository,
+            IProductReadRepository productReadRepository,
+            IOrderWriteRepository orderWriteRepository,
+            ICustomerWriteRepository customerWriteRepository,
+            IWebHostEnvironment webHostEnvironment)
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
-            return Ok(_productReadRepository.GetAll(false));
+            var totalCount = _productReadRepository.GetAll(false).Count();
+            var products = _productReadRepository.GetAll(false).Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Stock,
+                p.Price,
+                p.CreatedDate,
+                p.UpdatedDate
+            }).Skip(pagination.Page * pagination.Size).Take(pagination.Size);
+            return Ok(new
+            {
+                totalCount,
+                products
+            });
         }
 
         [HttpGet("{id}")]
@@ -65,5 +87,31 @@ namespace ETradeBackend.WebAPI.Controllers
             await _productWriteRepository.SaveAsync();
             return StatusCode((int)HttpStatusCode.OK);
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Upload()
+        {
+
+            Random r = new();
+
+            //wwwroot/resources/productImages
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resources/productImages");
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            foreach (IFormFile file in Request.Form.Files)
+            {
+                //yukarıdaki uploadpath + randeomsayi+dosya uzantısı exp: wwwroot/resources/productImages/234432.jpg
+                string fullPath = Path.Combine(uploadPath, $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
+
+                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
+                await file.CopyToAsync(fileStream);
+                await fileStream.FlushAsync();
+            }
+            return Ok();
+        }
+
+
     }
+
 }

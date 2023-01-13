@@ -19,4 +19,8 @@
     <ProjectReference Include="..\..\Infrastructure\ETradeBackend.Persistance\ETradeBackend.Persistance.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
