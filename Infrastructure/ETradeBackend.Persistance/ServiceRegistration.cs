@@ -14,6 +14,12 @@ using ETradeBackend.Persistance.Repositories.OrderRepository;
 using ETradeBackend.Application.Repositories.OrderRepository;
 using ETradeBackend.Application.Repositories.ProductRepository;
 using ETradeBackend.Persistance.Repositories.ProductRepository;
+using ETradeBackend.Application.Repositories.Files;
+using ETradeBackend.Persistance.Repositories.FileRepository;
+using ETradeBackend.Application.Repositories.ProductImageFileRepository;
+using ETradeBackend.Persistance.Repositories.ProductImageFileRepository;
+using ETradeBackend.Application.Repositories.InvoiceFileRepository;
+using ETradeBackend.Persistance.Repositories.InvoiceFileRepository;
 
 namespace ETradeBackend.Persistance
 {
@@ -28,6 +34,13 @@ namespace ETradeBackend.Persistance
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<IFileReadRepository, FileReadRepository>();
+            services.AddScoped<IFileWriteRepository, FileWriteRepository>();
+            services.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
+            services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
+            services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
+            services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+
         }
     }
 }

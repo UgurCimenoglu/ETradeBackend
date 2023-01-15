@@ -1,9 +1,14 @@
 ﻿using ETradeBackend.Application.Abstracts;
 using ETradeBackend.Application.Repositories.CustomerRepository;
+using ETradeBackend.Application.Repositories.Files;
+using ETradeBackend.Application.Repositories.InvoiceFileRepository;
 using ETradeBackend.Application.Repositories.OrderRepository;
+using ETradeBackend.Application.Repositories.ProductImageFileRepository;
 using ETradeBackend.Application.Repositories.ProductRepository;
 using ETradeBackend.Application.RequestParameters;
+using ETradeBackend.Application.Services;
 using ETradeBackend.Application.ViewModels.Products;
+using ETradeBackend.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -17,17 +22,38 @@ namespace ETradeBackend.WebAPI.Controllers
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFileService _fileService;
+        private readonly IFileWriteRepository _fileWriteRepository;
+        private readonly IFileReadRepository _fileReadRepository;
+        private readonly IProductImageFileReadRepository _productImageFileReadRepository;
+        private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+        private readonly IInvoiceFileWriteRepository _invoiceFileWriteRepository;
+        private readonly IInvoiceFileWriteRepository _invoiceImageFileWriteRepository;
 
-        public ProductsController(
+        public ProductsController
+            (
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
-            IOrderWriteRepository orderWriteRepository,
-            ICustomerWriteRepository customerWriteRepository,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IFileService fileService,
+            IFileWriteRepository fileWriteRepository,
+            IFileReadRepository fileReadRepository,
+            IProductImageFileReadRepository productImageFileReadRepository,
+            IProductImageFileWriteRepository productImageFileWriteRepository,
+            IInvoiceFileWriteRepository invoiceFileWriteRepository,
+            IInvoiceFileWriteRepository invoiceImageFileWriteRepository
+            )
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
             _webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
+            _fileWriteRepository = fileWriteRepository;
+            _fileReadRepository = fileReadRepository;
+            _productImageFileReadRepository = productImageFileReadRepository;
+            _productImageFileWriteRepository = productImageFileWriteRepository;
+            _invoiceFileWriteRepository = invoiceFileWriteRepository;
+            _invoiceImageFileWriteRepository = invoiceImageFileWriteRepository;
         }
 
         [HttpGet]
@@ -91,24 +117,15 @@ namespace ETradeBackend.WebAPI.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-
-            Random r = new();
-
-            //wwwroot/resources/productImages
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resources/productImages");
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-
-            foreach (IFormFile file in Request.Form.Files)
+            var result = await _fileService.UploadAsync("resources/product-images", Request.Form.Files);
+            await _productImageFileWriteRepository.AddRangeAsync(result.Select(d => new ProductImageFile
             {
-                //yukarıdaki uploadpath + randeomsayi+dosya uzantısı exp: wwwroot/resources/productImages/234432.jpg
-                string fullPath = Path.Combine(uploadPath, $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
+                FileName = d.fileName,
+                Path = d.path
+            }).ToList());
+            await _productImageFileWriteRepository.SaveAsync();
 
-                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                await file.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
-            }
-            return Ok();
+            return Ok(result);
         }
 
 

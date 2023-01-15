@@ -1,4 +1,5 @@
 using ETradeBackend.Application.Validators.Product;
+using ETradeBackend.Infrastructure;
 using ETradeBackend.Infrastructure.Filters;
 using ETradeBackend.Persistance;
 using FluentValidation.AspNetCore;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistenceServices();
+builder.Services.AddInfrastructureServices();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
