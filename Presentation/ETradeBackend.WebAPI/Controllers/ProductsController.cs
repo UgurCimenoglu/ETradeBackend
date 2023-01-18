@@ -1,15 +1,11 @@
-﻿using ETradeBackend.Application.Abstracts;
-using ETradeBackend.Application.Repositories.CustomerRepository;
+﻿using ETradeBackend.Application.Abstracts.Storage;
 using ETradeBackend.Application.Repositories.Files;
 using ETradeBackend.Application.Repositories.InvoiceFileRepository;
-using ETradeBackend.Application.Repositories.OrderRepository;
 using ETradeBackend.Application.Repositories.ProductImageFileRepository;
 using ETradeBackend.Application.Repositories.ProductRepository;
 using ETradeBackend.Application.RequestParameters;
-using ETradeBackend.Application.Services;
 using ETradeBackend.Application.ViewModels.Products;
 using ETradeBackend.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -22,38 +18,38 @@ namespace ETradeBackend.WebAPI.Controllers
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IFileService _fileService;
         private readonly IFileWriteRepository _fileWriteRepository;
         private readonly IFileReadRepository _fileReadRepository;
         private readonly IProductImageFileReadRepository _productImageFileReadRepository;
         private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
         private readonly IInvoiceFileWriteRepository _invoiceFileWriteRepository;
         private readonly IInvoiceFileWriteRepository _invoiceImageFileWriteRepository;
+        private readonly IStorageService _storageService;
 
         public ProductsController
             (
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
             IWebHostEnvironment webHostEnvironment,
-            IFileService fileService,
             IFileWriteRepository fileWriteRepository,
             IFileReadRepository fileReadRepository,
             IProductImageFileReadRepository productImageFileReadRepository,
             IProductImageFileWriteRepository productImageFileWriteRepository,
             IInvoiceFileWriteRepository invoiceFileWriteRepository,
-            IInvoiceFileWriteRepository invoiceImageFileWriteRepository
+            IInvoiceFileWriteRepository invoiceImageFileWriteRepository,
+            IStorageService storageService
             )
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
             _webHostEnvironment = webHostEnvironment;
-            _fileService = fileService;
             _fileWriteRepository = fileWriteRepository;
             _fileReadRepository = fileReadRepository;
             _productImageFileReadRepository = productImageFileReadRepository;
             _productImageFileWriteRepository = productImageFileWriteRepository;
             _invoiceFileWriteRepository = invoiceFileWriteRepository;
             _invoiceImageFileWriteRepository = invoiceImageFileWriteRepository;
+            _storageService = storageService;
         }
 
         [HttpGet]
@@ -117,15 +113,16 @@ namespace ETradeBackend.WebAPI.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            var result = await _fileService.UploadAsync("resources/product-images", Request.Form.Files);
-            await _productImageFileWriteRepository.AddRangeAsync(result.Select(d => new ProductImageFile
+            var datas = await _storageService.UploadAsync("resources/files", Request.Form.Files);
+            await _productImageFileWriteRepository.AddRangeAsync(datas.Select(d => new ProductImageFile
             {
                 FileName = d.fileName,
-                Path = d.path
+                Path = d.pathOrContainerName,
+                StorageType = _storageService.StorageName
             }).ToList());
             await _productImageFileWriteRepository.SaveAsync();
-
-            return Ok(result);
+          
+            return Ok();
         }
 
 

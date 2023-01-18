@@ -1,11 +1,8 @@
-﻿using ETradeBackend.Application.Services;
-using ETradeBackend.Infrastructure.Services;
+﻿using ETradeBackend.Application.Abstracts.Storage;
+using ETradeBackend.Infrastructure.Enums;
+using ETradeBackend.Infrastructure.Services.Storage;
+using ETradeBackend.Infrastructure.Services.Storage.LocalStorage;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ETradeBackend.Infrastructure
 {
@@ -13,7 +10,27 @@ namespace ETradeBackend.Infrastructure
     {
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IStorageService, StorageService>();
+        }
+        public static void AddStorage<T>(this IServiceCollection services) where T : class, IStorage
+        {
+            services.AddScoped<IStorage, T>();
+        }
+        public static void AddStorage(this IServiceCollection services, StorageType storageType)
+        {
+            switch (storageType)
+            {
+                case StorageType.Local:
+                    services.AddScoped<IStorage, LocalStorage>();
+                    break;
+                case StorageType.Azure:
+                    break;
+                case StorageType.AWS:
+                    break;
+                default:
+                    services.AddScoped<IStorage, LocalStorage>();
+                    break;
+            }
         }
     }
 }

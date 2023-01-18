@@ -15,4 +15,9 @@
     <ProjectReference Include="..\..\Core\ETradeBackend.Application\ETradeBackend.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Storage\Azure\" />
+    <Folder Include="Services\Storage\AWS\" />
+  </ItemGroup>
+
 </Project>

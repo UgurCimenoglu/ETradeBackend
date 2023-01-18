@@ -1,6 +1,8 @@
 using ETradeBackend.Application.Validators.Product;
 using ETradeBackend.Infrastructure;
+using ETradeBackend.Infrastructure.Enums;
 using ETradeBackend.Infrastructure.Filters;
+using ETradeBackend.Infrastructure.Services.Storage.LocalStorage;
 using ETradeBackend.Persistance;
 using FluentValidation.AspNetCore;
 
@@ -9,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
+
+builder.Services.AddStorage<LocalStorage>();
+//builder.Services.AddStorage(StorageType.Local);
+
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
