@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ETradeBackend.Infrastructure.Services.Storage.LocalStorage
 {
-    public class LocalStorage : ILocalStorage
+    public class LocalStorage : Storage, ILocalStorage
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -21,7 +21,6 @@ namespace ETradeBackend.Infrastructure.Services.Storage.LocalStorage
         public async Task DeleteAsync(string path, string fileName)
 
            => File.Delete($"{path}\\{fileName}");
-
 
         public List<string> GetFiles(string path)
         {
@@ -43,14 +42,16 @@ namespace ETradeBackend.Infrastructure.Services.Storage.LocalStorage
 
             foreach (IFormFile file in formFiles)
             {
-                var result = await CopyFileAsync($"{uploadPath}\\{file.Name}", file);
-                datas.Add((file.Name, $"{path}\\{file.Name}"));
+                string newFileName = await FileRenameAsync(path, file.Name, HasFile);
+                var result = await CopyFileAsync($"{uploadPath}\\{newFileName}", file);
+                datas.Add((newFileName, $"{path}\\{newFileName}"));
             }
 
             //todo custom exception fırlatılacak.
             return datas;
         }
-        private async Task<bool> CopyFileAsync(string path, IFormFile file)
+       
+        async Task<bool> CopyFileAsync(string path, IFormFile file)
         {
             try
             {
