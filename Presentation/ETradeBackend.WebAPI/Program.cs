@@ -1,3 +1,4 @@
+using ETradeBackend.Application;
 using ETradeBackend.Application.Validators.Product;
 using ETradeBackend.Infrastructure;
 using ETradeBackend.Infrastructure.Enums;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddStorage<LocalStorage>();
 //builder.Services.AddStorage(StorageType.Local);
