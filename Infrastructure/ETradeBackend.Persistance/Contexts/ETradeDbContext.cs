@@ -1,10 +1,12 @@
 ﻿using ETradeBackend.Domain.Entities;
 using ETradeBackend.Domain.Entities.Common;
+using ETradeBackend.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETradeBackend.Persistance.Contexts
 {
-    public class ETradeDbContext : DbContext
+    public class ETradeDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public ETradeDbContext(DbContextOptions options) : base(options)
         {

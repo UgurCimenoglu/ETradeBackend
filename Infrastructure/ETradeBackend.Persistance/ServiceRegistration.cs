@@ -1,13 +1,6 @@
-﻿using ETradeBackend.Application.Abstracts;
-using ETradeBackend.Persistance.Concretes;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ETradeBackend.Persistance.Contexts;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ETradeBackend.Application.Repositories.CustomerRepository;
 using ETradeBackend.Persistance.Repositories.CustomerRepository;
 using ETradeBackend.Persistance.Repositories.OrderRepository;
@@ -20,6 +13,7 @@ using ETradeBackend.Application.Repositories.ProductImageFileRepository;
 using ETradeBackend.Persistance.Repositories.ProductImageFileRepository;
 using ETradeBackend.Application.Repositories.InvoiceFileRepository;
 using ETradeBackend.Persistance.Repositories.InvoiceFileRepository;
+using ETradeBackend.Domain.Entities.Identity;
 
 namespace ETradeBackend.Persistance
 {
@@ -27,7 +21,20 @@ namespace ETradeBackend.Persistance
     {
         public static void AddPersistenceServices(this IServiceCollection services)
         {
+            //projenin postgre sql veritabanı kullanacağını ve connection stringi burada IoC'ye bildiriyoruz.
             services.AddDbContext<ETradeDbContext>(options => options.UseNpgsql(Configuration.ConnectionString));
+
+            //IoC'ye Identity mekanizmasını kullanacağımızı söylüyoruz ve bunu veritabanına yansıtması için gerekli konfigürasyonu yapıyoruz.
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+
+            }).AddEntityFrameworkStores<ETradeDbContext>();
+
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();
