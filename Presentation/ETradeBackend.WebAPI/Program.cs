@@ -6,6 +6,9 @@ using ETradeBackend.Infrastructure.Filters;
 using ETradeBackend.Infrastructure.Services.Storage.LocalStorage;
 using ETradeBackend.Persistance;
 using FluentValidation.AspNetCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +34,33 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("Admin", options => options.TokenValidationParameters = new()
+    {
+        ValidateAudience =
+            true, //oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacagýný belirlediðimiz deðerdir. Örn www.ugurcimen.com
+        ValidateIssuer = true, //oluþturulan tokeni kimin daðýttýðýný bildirdiðimiz alandýr. Örn www.myapi.com
+        ValidateLifetime = true, //oluþturulan tokenin süresini kontrol edecek olan alandir.
+        ValidateIssuerSigningKey =
+            true, //Üretilecek token deðerinin uygulamamýza ait olduðunu bildiren bir deðer olduðunu ifade eden securityKey verisinin doðrulamasýdýr.
+
+        ValidAudience = builder.Configuration["Token:Audience"],
+        ValidIssuer = builder.Configuration["Token:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+    }).AddJwtBearer("Manav", options => options.TokenValidationParameters = new()
+    {
+        ValidateAudience =
+            true, //oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacagýný belirlediðimiz deðerdir. Örn www.ugurcimen.com
+        ValidateIssuer = true, //oluþturulan tokeni kimin daðýttýðýný bildirdiðimiz alandýr. Örn www.myapi.com
+        ValidateLifetime = true, //oluþturulan tokenin süresini kontrol edecek olan alandir.
+        ValidateIssuerSigningKey =
+            true, //Üretilecek token deðerinin uygulamamýza ait olduðunu bildiren bir deðer olduðunu ifade eden securityKey verisinin doðrulamasýdýr.
+
+        ValidAudience = builder.Configuration["Token:Audience"],
+        ValidIssuer = builder.Configuration["Token:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("azsd"))
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +76,7 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

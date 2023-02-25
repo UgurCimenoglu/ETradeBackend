@@ -28,7 +28,7 @@ namespace ETradeBackend.WebAPI.Controllers
         public async Task<IActionResult> Login(LoginUserCommandRequest request)
         {
             var result = await _mediator.Send(request);
-            return Ok();
+            return Ok(result);
         }
     }
 }

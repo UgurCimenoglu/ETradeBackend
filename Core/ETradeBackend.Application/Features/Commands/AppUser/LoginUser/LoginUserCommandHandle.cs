@@ -1,4 +1,6 @@
-﻿using ETradeBackend.Application.Exceptions;
+﻿using ETradeBackend.Application.Abstracts.Token;
+using ETradeBackend.Application.DTOs;
+using ETradeBackend.Application.Exceptions;
 using ETradeBackend.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,10 +16,14 @@ namespace ETradeBackend.Application.Features.Commands.AppUser.LoginUser
     {
         private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
         private readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-        public LoginUserCommandHandle(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager)
+        private readonly ITokenHandler _tokenHandler;
+        public LoginUserCommandHandle(UserManager<Domain.Entities.Identity.AppUser> userManager,
+            SignInManager<Domain.Entities.Identity.AppUser> signInManager,
+            ITokenHandler tokenHandler)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenHandler = tokenHandler;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
@@ -31,9 +37,18 @@ namespace ETradeBackend.Application.Features.Commands.AppUser.LoginUser
             var result = await _signInManager.CheckPasswordSignInAsync(appUser, request.Password, false);
             if (result.Succeeded)
             {
+                Token token = _tokenHandler.CreateAccessToken(tokenExpirationMinute: 30);
+                return new LoginUserSuccesCommandResponse()
+                {
+                    Token = token
+                };
                 //Todo yetkiler
             }
-            return new();
+            //return new LoginUserErrorCommandResponse()
+            //{
+            //    Message = "Kullanici adi veya sifre hatali!"
+            //};
+            throw new AuthenticationErrorException();
         }
     }
 }
