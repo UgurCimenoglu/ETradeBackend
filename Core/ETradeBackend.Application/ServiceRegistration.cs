@@ -13,6 +13,7 @@ namespace ETradeBackend.Application
         public static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddMediatR(typeof(ServiceRegistration));
+            services.AddHttpClient();
         }
     }
 }

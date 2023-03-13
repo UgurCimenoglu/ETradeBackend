@@ -9,5 +9,6 @@ namespace ETradeBackend.Application.Abstracts.Token
     public interface ITokenHandler
     {
         DTOs.Token CreateAccessToken(int tokenExpirationMinute = 30);
+        string CreateRefreshToken();
     }
 }

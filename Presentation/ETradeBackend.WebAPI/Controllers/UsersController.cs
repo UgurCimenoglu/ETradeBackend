@@ -1,4 +1,6 @@
 ﻿using ETradeBackend.Application.Features.Commands.AppUser.CreateUser;
+using ETradeBackend.Application.Features.Commands.AppUser.FacebookLogin;
+using ETradeBackend.Application.Features.Commands.AppUser.GoogleLogin;
 using ETradeBackend.Application.Features.Commands.AppUser.LoginUser;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -24,11 +26,6 @@ namespace ETradeBackend.WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Login(LoginUserCommandRequest request)
-        {
-            var result = await _mediator.Send(request);
-            return Ok(result);
-        }
+
     }
 }
