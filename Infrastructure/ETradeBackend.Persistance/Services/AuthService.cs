@@ -44,8 +44,8 @@ namespace ETradeBackend.Persistance.Services
             var result = await _signInManager.CheckPasswordSignInAsync(appUser, password, false);
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAccessToken(tokenExpirationMinute: 1);
-                await _userService.UpdateRefreshToken(appUser, token.RefreshToken, token.Expiration, 1);
+                Token token = _tokenHandler.CreateAccessToken(appUser, tokenExpirationMinute: 30);
+                await _userService.UpdateRefreshToken(appUser, token.RefreshToken, token.Expiration, 30);
                 //Todo yetkiler
                 return token;
             }
@@ -133,8 +133,8 @@ namespace ETradeBackend.Persistance.Services
             }
             if (result)
             {
-                Token token = _tokenHandler.CreateAccessToken(tokenExpirationMinute: 1);
-                await _userService.UpdateRefreshToken(appUser, token.RefreshToken, token.Expiration, 1);
+                Token token = _tokenHandler.CreateAccessToken(appUser, tokenExpirationMinute: 30);
+                await _userService.UpdateRefreshToken(appUser, token.RefreshToken, token.Expiration, 30);
                 return token;
             }
             throw new Exception("Invalid External Authentication");
@@ -145,8 +145,8 @@ namespace ETradeBackend.Persistance.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                Token token = _tokenHandler.CreateAccessToken(1);
-                await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 1);
+                Token token = _tokenHandler.CreateAccessToken(user, 30);
+                await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 30);
                 return token;
             }
             else

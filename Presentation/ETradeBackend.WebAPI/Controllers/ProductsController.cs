@@ -33,14 +33,15 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllProductsQueryRequest request)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllProductsQueryRequest request)
         {
             var result = await _mediator.Send(request);
             return Ok(result);
-
         }
 
         [HttpGet("{Id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -77,6 +78,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("[action]/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductImages([FromRoute] GetProductImageQueryRequest request)
         {
             var result = await _mediator.Send(request);
