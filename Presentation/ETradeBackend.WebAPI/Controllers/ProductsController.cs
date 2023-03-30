@@ -2,6 +2,7 @@
 using ETradeBackend.Application.Features.Commands.Product.CreateProduct;
 using ETradeBackend.Application.Features.Commands.Product.RemoveProduct;
 using ETradeBackend.Application.Features.Commands.Product.UpdateProduct;
+using ETradeBackend.Application.Features.Commands.ProductImageFile.ChangeShowCaseImage;
 using ETradeBackend.Application.Features.Commands.ProductImageFile.RemoveProductImage;
 using ETradeBackend.Application.Features.Commands.ProductImageFile.UploadProductImage;
 using ETradeBackend.Application.Features.Queries.Product.GetAllProducts;
@@ -91,6 +92,13 @@ namespace ETradeBackend.WebAPI.Controllers
             request.ImageId = imageId;
             await _mediator.Send(request);
             return Ok();
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> ChangeShowCaseImage([FromQuery] ChangeShowCaseImageCommandRequest request)
+        {
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
     }
 

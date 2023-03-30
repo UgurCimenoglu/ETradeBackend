@@ -30,6 +30,7 @@ namespace ETradeBackend.Application.Features.Queries.ProductImaageFile.GetProduc
                 Id = p.Id,
                 FileName = p.FileName,
                 Path = $"{_configuration["BaseStorageUrl"]}{p.Path}",
+                ShowCase = p.ShowCase
             }).ToList();
         }
     }

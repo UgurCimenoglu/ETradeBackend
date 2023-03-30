@@ -11,5 +11,6 @@ namespace ETradeBackend.Application.Features.Queries.ProductImaageFile.GetProduc
         public Guid Id { get; set; }
         public string Path { get; set; }
         public string FileName { get; set; }
+        public bool  ShowCase{ get; set; }
     }
 }

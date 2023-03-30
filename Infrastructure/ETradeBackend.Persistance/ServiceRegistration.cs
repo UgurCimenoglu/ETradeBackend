@@ -1,5 +1,6 @@
 ﻿using ETradeBackend.Application.Abstracts.Services;
 using ETradeBackend.Application.Abstracts.Services.Authhentications;
+using ETradeBackend.Application.Repositories.Basket;
 using Microsoft.EntityFrameworkCore;
 using ETradeBackend.Persistance.Contexts;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,10 @@ using ETradeBackend.Persistance.Repositories.ProductImageFileRepository;
 using ETradeBackend.Application.Repositories.InvoiceFileRepository;
 using ETradeBackend.Persistance.Repositories.InvoiceFileRepository;
 using ETradeBackend.Domain.Entities.Identity;
+using ETradeBackend.Persistance.Repositories.BasketRepository;
 using ETradeBackend.Persistance.Services;
+using ETradeBackend.Persistance.Repositories.BasketItemRepository;
+using ETradeBackend.Application.Repositories.BasketItem;
 
 namespace ETradeBackend.Persistance
 {
@@ -50,12 +54,17 @@ namespace ETradeBackend.Persistance
             services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
             services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+            services.AddScoped<IBasketReadRepository, BasketReadRepository>();
+            services.AddScoped<IBasketWriteRepository, BasketWriteRepository>();
+            services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
+            services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
 
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();
             services.AddScoped<IExternalAuthentication, AuthService>();
+            services.AddScoped<IBasketService, BasketService>();
         }
     }
 }
