@@ -28,9 +28,6 @@ namespace ETradeBackend.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -43,7 +40,7 @@ namespace ETradeBackend.Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Baskets");
                 });
@@ -447,7 +444,9 @@ namespace ETradeBackend.Persistance.Migrations
                 {
                     b.HasOne("ETradeBackend.Domain.Entities.Identity.AppUser", "AppUser")
                         .WithMany("Baskets")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
                 });

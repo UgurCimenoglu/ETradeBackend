@@ -42,8 +42,8 @@ namespace ETradeBackend.Persistance.Services
                     .FirstOrDefaultAsync(u => u.UserName == username);
 
                 var _basket = from basket in user?.Baskets
-                              join Order in _orderReadRepository.Table
-                                  on basket.Id equals Order.Id into BasketOrders
+                              join order in _orderReadRepository.Table
+                                  on basket.Id equals order.Id into BasketOrders
                               from order in BasketOrders.DefaultIfEmpty()
                               select new
                               {
@@ -95,6 +95,7 @@ namespace ETradeBackend.Persistance.Services
             Basket? result = await _basketReadRepository.Table
                  .Include(b => b.BasketItems)
                  .ThenInclude(bi => bi.Product)
+                 .ThenInclude(p => p.ProductImageFiles)
                  .FirstOrDefaultAsync(b => b.Id == basket.Id);
 
             return result.BasketItems.ToList();
@@ -109,7 +110,6 @@ namespace ETradeBackend.Persistance.Services
                 await _basketWriteRepository.SaveAsync();
             }
 
-            throw new Exception("Sepetten ürün silme işleminde beklenmeyen bir hata oluştu!");
         }
 
         public async Task UpdateQuantityAsync(VM_Update_Basketitem basketItem)
@@ -117,11 +117,9 @@ namespace ETradeBackend.Persistance.Services
             BasketItem currentBasketItem = await _basketItemReadRepository.GetByIdAsync(basketItem.BasketItemId);
             if (currentBasketItem != null)
             {
-                currentBasketItem.Quantity += basketItem.Quantity;
+                currentBasketItem.Quantity = basketItem.Quantity;
                 await _basketItemWriteRepository.SaveAsync();
             }
-
-            throw new Exception("Sepetteki ürünü güncelleme işleminde beklenmeyen bir hata oluştu!");
         }
     }
 }

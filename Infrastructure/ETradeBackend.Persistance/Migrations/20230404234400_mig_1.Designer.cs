@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ETradeBackend.Persistance.Migrations
 {
     [DbContext(typeof(ETradeDbContext))]
-    [Migration("20230326185006_mig_10")]
-    partial class mig_10
+    [Migration("20230404234400_mig_1")]
+    partial class mig_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,9 +30,6 @@ namespace ETradeBackend.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -45,7 +42,7 @@ namespace ETradeBackend.Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Baskets");
                 });
@@ -236,7 +233,6 @@ namespace ETradeBackend.Persistance.Migrations
             modelBuilder.Entity("ETradeBackend.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
@@ -450,7 +446,9 @@ namespace ETradeBackend.Persistance.Migrations
                 {
                     b.HasOne("ETradeBackend.Domain.Entities.Identity.AppUser", "AppUser")
                         .WithMany("Baskets")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
                 });
@@ -481,6 +479,14 @@ namespace ETradeBackend.Persistance.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ETradeBackend.Domain.Entities.Basket", "Basket")
+                        .WithOne("Order")
+                        .HasForeignKey("ETradeBackend.Domain.Entities.Order", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Basket");
 
                     b.Navigation("Customer");
                 });
@@ -569,6 +575,9 @@ namespace ETradeBackend.Persistance.Migrations
             modelBuilder.Entity("ETradeBackend.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
+
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETradeBackend.Domain.Entities.Customer", b =>

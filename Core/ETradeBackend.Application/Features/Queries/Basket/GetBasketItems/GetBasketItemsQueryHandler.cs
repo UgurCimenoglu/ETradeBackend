@@ -20,13 +20,15 @@ namespace ETradeBackend.Application.Features.Queries.Basket.GetBasketItems
         public async Task<List<GetBasketItemsQueryResponse>> Handle(GetBasketItemsQueryRequest request, CancellationToken cancellationToken)
         {
             var basketItems = await _basketService.GetBasketItemsAsync();
-            return basketItems.Select(bi => new GetBasketItemsQueryResponse()
+            var a = basketItems.Select(bi => new GetBasketItemsQueryResponse()
             {
                 BasketItemId = bi.Id.ToString(),
                 Name = bi.Product.Name,
                 Quantity = bi.Quantity,
-                Price = bi.Product.Price
+                Price = bi.Product.Price,
+                Image = bi?.Product?.ProductImageFiles?.FirstOrDefault(pi => pi.ShowCase)?.Path
             }).ToList();
+            return a;
         }
     }
 }
