@@ -121,5 +121,7 @@ namespace ETradeBackend.Persistance.Services
                 await _basketItemWriteRepository.SaveAsync();
             }
         }
+        public Basket? GetUserActiveBasket => this.ContextUser().Result;
+
     }
 }

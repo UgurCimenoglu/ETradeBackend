@@ -14,6 +14,7 @@ namespace ETradeBackend.SignalR
         public static void AddSignalRServices(this IServiceCollection services)
         {
             services.AddScoped<IProductHubService, ProductHubService>();
+            services.AddScoped<IOrderHubService, OrderHubService>();
             services.AddSignalR();
         }
     }
