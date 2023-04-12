@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ETradeBackend.Application\ETradeBackend.Application.csproj" />
+    <ProjectReference Include="..\ETradeBackend.Infrastructure\ETradeBackend.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
