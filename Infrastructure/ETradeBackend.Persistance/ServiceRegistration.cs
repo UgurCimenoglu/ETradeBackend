@@ -21,6 +21,7 @@ using ETradeBackend.Persistance.Repositories.BasketRepository;
 using ETradeBackend.Persistance.Services;
 using ETradeBackend.Persistance.Repositories.BasketItemRepository;
 using ETradeBackend.Application.Repositories.BasketItem;
+using Microsoft.AspNetCore.Identity;
 
 namespace ETradeBackend.Persistance
 {
@@ -33,14 +34,15 @@ namespace ETradeBackend.Persistance
 
             //IoC'ye Identity mekanizmasını kullanacağımızı söylüyoruz ve bunu veritabanına yansıtması için gerekli konfigürasyonu yapıyoruz.
             services.AddIdentity<AppUser, AppRole>(options =>
-            {
-                options.Password.RequiredLength = 3;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
+                {
+                    options.Password.RequiredLength = 3;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
 
-            }).AddEntityFrameworkStores<ETradeDbContext>();
+                }).AddEntityFrameworkStores<ETradeDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();

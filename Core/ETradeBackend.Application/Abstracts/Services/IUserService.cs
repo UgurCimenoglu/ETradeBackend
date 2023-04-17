@@ -11,6 +11,7 @@ namespace ETradeBackend.Application.Abstracts.Services
     public interface IUserService
     {
         Task<CreateUserResponse> CreateAsync(CreateUser model);
-        Task UpdateRefreshToken(AppUser user, string refreshToken, DateTime accessTokenDateTime, int addOnAccessTokenDateTime);
+        Task UpdateRefreshTokenAsync(AppUser user, string refreshToken, DateTime accessTokenDateTime, int addOnAccessTokenDateTime);
+        Task UpdatePasswordAsync(string userId, string resetToken, string newPassword);
     }
 }

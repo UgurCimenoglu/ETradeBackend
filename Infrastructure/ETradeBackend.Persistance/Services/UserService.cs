@@ -7,6 +7,7 @@ using ETradeBackend.Application.Abstracts.Services;
 using ETradeBackend.Application.DTOs.User;
 using ETradeBackend.Application.Exceptions;
 using ETradeBackend.Application.Features.Commands.AppUser.CreateUser;
+using ETradeBackend.Application.Helpers;
 using ETradeBackend.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -42,7 +43,7 @@ namespace ETradeBackend.Persistance.Services
             return response;
         }
 
-        public async Task UpdateRefreshToken(AppUser user, string refreshToken, DateTime accessTokenDateTime, int refreshTokenLifeTimeMinutes)
+        public async Task UpdateRefreshTokenAsync(AppUser user, string refreshToken, DateTime accessTokenDateTime, int refreshTokenLifeTimeMinutes)
         {
 
             if (user != null)
@@ -53,6 +54,22 @@ namespace ETradeBackend.Persistance.Services
             }
             else
                 throw new NotFoundUserException();
+        }
+
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                resetToken = resetToken.UrlDecode();
+                var result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+                if (result.Succeeded)
+                {
+                    await _userManager.UpdateSecurityStampAsync(user);
+                }
+                else
+                    throw new PasswordChangeFailedException();
+            }
         }
     }
 }
