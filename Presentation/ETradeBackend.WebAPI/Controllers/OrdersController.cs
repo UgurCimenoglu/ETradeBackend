@@ -1,4 +1,5 @@
-﻿using ETradeBackend.Application.Features.Commands.Order.CreateOrder;
+﻿using ETradeBackend.Application.Features.Commands.Order.CompletedOrder;
+using ETradeBackend.Application.Features.Commands.Order.CreateOrder;
 using ETradeBackend.Application.Features.Queries.Order.GetAllOrders;
 using ETradeBackend.Application.Features.Queries.Order.GetOrderById;
 using MediatR;
@@ -36,6 +37,13 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetOrderById([FromRoute] GetOrderByIdQueryRequest request)
+        {
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+
+        [HttpGet("complete-order/{id}")]
+        public async Task<IActionResult> CompleteOrder([FromRoute] CompletedOrderCommandRequest request)
         {
             var result = await _mediator.Send(request);
             return Ok(result);

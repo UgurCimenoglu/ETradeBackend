@@ -19,5 +19,6 @@ namespace ETradeBackend.Application.DTOs.Order
         public string UserName { get; set; }
         public float TotalPrice { get; set; }
         public DateTime CreatedDate { get; set; }
+        public bool Completed { get; set; }
     }
 }

@@ -21,6 +21,8 @@ using ETradeBackend.Persistance.Repositories.BasketRepository;
 using ETradeBackend.Persistance.Services;
 using ETradeBackend.Persistance.Repositories.BasketItemRepository;
 using ETradeBackend.Application.Repositories.BasketItem;
+using ETradeBackend.Application.Repositories.CompletedOrder;
+using ETradeBackend.Persistance.Repositories.CompletedOrder;
 using Microsoft.AspNetCore.Identity;
 
 namespace ETradeBackend.Persistance
@@ -60,6 +62,8 @@ namespace ETradeBackend.Persistance
             services.AddScoped<IBasketWriteRepository, BasketWriteRepository>();
             services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
             services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+            services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
+            services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
 
             services.AddScoped<IUserService, UserService>();
 
