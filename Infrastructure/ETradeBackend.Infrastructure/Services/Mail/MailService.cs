@@ -58,5 +58,12 @@ namespace ETradeBackend.Infrastructure.Services.Mail
 
             await SendMailAsync(to, "Şifre Yenileme Talebi - UgurETicaret", mail.ToString());
         }
+
+        public async Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate, string userFullName)
+        {
+            string mailContent = $"Merhaba Sn {userFullName} <br>" +
+                                 $"{orderDate} tarihinde sipariş vermiş olduğunuz {orderCode}'lu siparişiniz tamamlanmış ve kargoya verilmiştir, <br> Güzel günlerde kullanmanız dileğiyle...";
+            await SendMailAsync(to, $"{orderCode} nolu Siparişiniz Tamamlanmıştır...", mailContent);
+        }
     }
 }

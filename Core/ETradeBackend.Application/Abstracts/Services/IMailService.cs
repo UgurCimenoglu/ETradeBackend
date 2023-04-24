@@ -10,6 +10,7 @@ namespace ETradeBackend.Application.Abstracts.Services
     {
         Task SendMailAsync(string to, string subject, string body, bool isBodyHtml = true);
         Task SendMailAsync(string[] to, string subject, string body, bool isBodyHtml = true);
-        Task SendResetPasswordMailAsync(string to,string userId,string resetToken);
+        Task SendResetPasswordMailAsync(string to, string userId, string resetToken);
+        Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate,string userFullName);
     }
 }

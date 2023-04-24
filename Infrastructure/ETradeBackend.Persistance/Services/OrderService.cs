@@ -19,13 +19,15 @@ namespace ETradeBackend.Persistance.Services
         private readonly IOrderReadRepository _orderReadRepository;
         private readonly ICompletedOrderWriteRepository _completedOrderWriteRepository;
         private readonly ICompletedOrderReadRepository _completedOrderReadRepository;
+        private readonly IMailService _mailService;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository, ICompletedOrderWriteRepository completedOrderWriteRepository, ICompletedOrderReadRepository completedOrderReadRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository, ICompletedOrderWriteRepository completedOrderWriteRepository, ICompletedOrderReadRepository completedOrderReadRepository, IMailService mailService)
         {
             _orderWriteRepository = orderWriteRepository;
             _orderReadRepository = orderReadRepository;
             _completedOrderWriteRepository = completedOrderWriteRepository;
             _completedOrderReadRepository = completedOrderReadRepository;
+            _mailService = mailService;
         }
 
         public async Task CreateOrderAsync(CreateOrder createOrder)
@@ -100,11 +102,19 @@ namespace ETradeBackend.Persistance.Services
 
         public async Task CompleteOrderAsync(string id)
         {
-            Order order = await _orderReadRepository.GetByIdAsync(id);
+            Order? order = await _orderReadRepository.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.AppUser)
+                .FirstOrDefaultAsync(oi => oi.Id == Guid.Parse(id));
             if (order is not null)
             {
                 await _completedOrderWriteRepository.AddAsync(new CompletedOrder() { OrderId = Guid.Parse(id) });
-                await _completedOrderWriteRepository.SaveAsync();
+                var result = await _completedOrderWriteRepository.SaveAsync() > 0;
+                if (result)
+                {
+                    await _mailService.SendCompletedOrderMailAsync(order.Basket.AppUser.Email, order.OrderCode, order.CreatedDate,
+                        order.Basket.AppUser.FullName);
+                }
             }
         }
     }

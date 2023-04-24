@@ -1,4 +1,7 @@
-﻿using ETradeBackend.Application.Features.Commands.Order.CompletedOrder;
+﻿using ETradeBackend.Application.Constants;
+using ETradeBackend.Application.CustomAttributes;
+using ETradeBackend.Application.Enums;
+using ETradeBackend.Application.Features.Commands.Order.CompletedOrder;
 using ETradeBackend.Application.Features.Commands.Order.CreateOrder;
 using ETradeBackend.Application.Features.Queries.Order.GetAllOrders;
 using ETradeBackend.Application.Features.Queries.Order.GetOrderById;
@@ -22,6 +25,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = ActionType.Writing, Definition = "Create Order")]
         public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
         {
             var result = await _mediator.Send(request);
@@ -29,6 +33,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = ActionType.Reading, Definition = "Get All Orders")]
         public async Task<IActionResult> GetAllOrders([FromQuery] GetAllOrdersQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -36,6 +41,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("{Id}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = ActionType.Reading, Definition = "Get Order By Id")]
         public async Task<IActionResult> GetOrderById([FromRoute] GetOrderByIdQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -43,6 +49,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("complete-order/{id}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = ActionType.Updating, Definition = "Complete an Order")]
         public async Task<IActionResult> CompleteOrder([FromRoute] CompletedOrderCommandRequest request)
         {
             var result = await _mediator.Send(request);

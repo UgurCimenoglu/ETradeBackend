@@ -1,4 +1,7 @@
 ﻿using ETradeBackend.Application.Abstracts.Storage;
+using ETradeBackend.Application.Constants;
+using ETradeBackend.Application.CustomAttributes;
+using ETradeBackend.Application.Enums;
 using ETradeBackend.Application.Features.Commands.Product.CreateProduct;
 using ETradeBackend.Application.Features.Commands.Product.RemoveProduct;
 using ETradeBackend.Application.Features.Commands.Product.UpdateProduct;
@@ -50,6 +53,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Add Product")]
         public async Task<IActionResult> Post(CreateProductCommandRequest request)
         {
             var result = await _mediator.Send(request);
@@ -57,6 +61,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPut]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Updating, Definition = "Update a Product")]
         public async Task<IActionResult> Put(UpdateProductCommandRequest request)
         {
             var result = await _mediator.Send(request);
@@ -64,6 +69,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Deleting, Definition = "Delete a Product")]
         public async Task<IActionResult> Delete([FromRoute] RemoveProductCommandRequest request)
         {
             var result = await _mediator.Send(request);
@@ -71,6 +77,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Upload Product Image")]
         public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest request)
         {
             request.FormFiles = Request.Form.Files;
@@ -80,6 +87,7 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpGet("[action]/{id}")]
         [AllowAnonymous]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Get Product Images")]
         public async Task<IActionResult> GetProductImages([FromRoute] GetProductImageQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -87,6 +95,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpDelete("[action]/{id}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Deleting, Definition = "Delete Product Images")]
         public async Task<IActionResult> DeleteProductImage([FromRoute] RemoveProductImageCommandRequest request, [FromQuery] string imageId)
         {
             request.ImageId = imageId;
@@ -95,6 +104,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("[action]")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Updating, Definition = "Change Product Showcase Images")]
         public async Task<IActionResult> ChangeShowCaseImage([FromQuery] ChangeShowCaseImageCommandRequest request)
         {
             var response = await _mediator.Send(request);

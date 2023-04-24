@@ -15,12 +15,10 @@ namespace ETradeBackend.WebAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMailService _mailService;
 
-        public UsersController(IMediator mediator, IMailService mailService)
+        public UsersController(IMediator mediator)
         {
             _mediator = mediator;
-            _mailService = mailService;
         }
 
         [HttpPost]
@@ -30,13 +28,5 @@ namespace ETradeBackend.WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> SendExampleMail()
-        {
-            await _mailService.SendMailAsync("ugurcimenogluu@gmail.com", "Test Mail",
-                "<strong>Bu bir test mailidir</strong>", true);
-            return Ok();
-        }
-        
     }
 }
