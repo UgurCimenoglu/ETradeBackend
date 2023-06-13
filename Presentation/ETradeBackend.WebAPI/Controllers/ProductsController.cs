@@ -87,7 +87,7 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpGet("[action]/{id}")]
         [AllowAnonymous]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Get Product Images")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Reading, Definition = "Get Product Images")]
         public async Task<IActionResult> GetProductImages([FromRoute] GetProductImageQueryRequest request)
         {
             var result = await _mediator.Send(request);

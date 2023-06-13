@@ -11,5 +11,7 @@ namespace ETradeBackend.Application.Constants
         public const string Basket = "Basket";
         public const string Orders = "Orders";
         public const string Products = "Products";
+        public const string ApplicationServices = "Application Services";
+        public const string Roles = "Roles";
     }
 }
