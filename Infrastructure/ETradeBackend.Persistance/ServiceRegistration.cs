@@ -22,7 +22,11 @@ using ETradeBackend.Persistance.Services;
 using ETradeBackend.Persistance.Repositories.BasketItemRepository;
 using ETradeBackend.Application.Repositories.BasketItem;
 using ETradeBackend.Application.Repositories.CompletedOrder;
+using ETradeBackend.Application.Repositories.EndpointRepository;
+using ETradeBackend.Application.Repositories.MenuRepository;
 using ETradeBackend.Persistance.Repositories.CompletedOrder;
+using ETradeBackend.Persistance.Repositories.EndpointRepository;
+using ETradeBackend.Persistance.Repositories.MenuRepository;
 using Microsoft.AspNetCore.Identity;
 
 namespace ETradeBackend.Persistance
@@ -64,6 +68,10 @@ namespace ETradeBackend.Persistance
             services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
             services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
             services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
+            services.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
+            services.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
+            services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
+            services.AddScoped<IMenuReadRepository, MenuReadRepository>();
 
             services.AddScoped<IUserService, UserService>();
 
@@ -73,6 +81,7 @@ namespace ETradeBackend.Persistance
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
         }
     }
 }

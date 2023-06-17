@@ -11,16 +11,19 @@ using ETradeBackend.Application.Helpers;
 using ETradeBackend.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETradeBackend.Persistance.Services
 {
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public UserService(UserManager<AppUser> userManager)
+        public UserService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<CreateUserResponse> CreateAsync(CreateUser model)
@@ -70,6 +73,60 @@ namespace ETradeBackend.Persistance.Services
                 else
                     throw new PasswordChangeFailedException();
             }
+        }
+
+        public async Task<List<ListUser>> GetAllUsersAsync(int page, int size)
+        {
+            var users = await _userManager.Users
+                .Skip(page * size)
+                .Take(size)
+                .ToListAsync();
+
+            return users.Select(user => new ListUser
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                TwoFactorEnabled = user.TwoFactorEnabled
+            }).ToList();
+
+        }
+
+        public int TotalUsersCount => _userManager.Users.Count();
+
+        public async Task AssignRoleToUserAsync(string userId, string[] roles)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var userCurrentRoles = await _userManager.GetRolesAsync(user);
+                var identityResult = await _userManager.RemoveFromRolesAsync(user, userCurrentRoles);
+                if (identityResult.Succeeded)
+                {     await _userManager.AddToRolesAsync(user, roles);
+                }
+                else
+                {
+                    throw new Exception(identityResult.Errors.ToString());
+                }
+            }
+            else
+            {
+                throw new NotFoundUserException();
+            }
+
+        }
+
+        public async Task<List<string>> GetRolesToUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                return roles.ToList();
+            }
+
+            throw new Exception("");
         }
     }
 }
