@@ -8,6 +8,8 @@ using ETradeBackend.Application.DTOs.User;
 using ETradeBackend.Application.Exceptions;
 using ETradeBackend.Application.Features.Commands.AppUser.CreateUser;
 using ETradeBackend.Application.Helpers;
+using ETradeBackend.Application.Repositories.EndpointRepository;
+using ETradeBackend.Domain.Entities;
 using ETradeBackend.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -18,12 +20,12 @@ namespace ETradeBackend.Persistance.Services
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<AppRole> _roleManager;
+        private readonly IEndpointReadRepository _endpointReadRepository;
 
-        public UserService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public UserService(UserManager<AppUser> userManager, IEndpointReadRepository endpointReadRepository)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
+            _endpointReadRepository = endpointReadRepository;
         }
 
         public async Task<CreateUserResponse> CreateAsync(CreateUser model)
@@ -103,7 +105,8 @@ namespace ETradeBackend.Persistance.Services
                 var userCurrentRoles = await _userManager.GetRolesAsync(user);
                 var identityResult = await _userManager.RemoveFromRolesAsync(user, userCurrentRoles);
                 if (identityResult.Succeeded)
-                {     await _userManager.AddToRolesAsync(user, roles);
+                {
+                    await _userManager.AddToRolesAsync(user, roles);
                 }
                 else
                 {
@@ -117,9 +120,13 @@ namespace ETradeBackend.Persistance.Services
 
         }
 
-        public async Task<List<string>> GetRolesToUserAsync(string userId)
+        public async Task<List<string>> GetRolesToUserAsync(string userIdOrName)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userIdOrName);
+            if (user == null)
+            {
+                user = await _userManager.FindByNameAsync(userIdOrName);
+            }
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -127,6 +134,28 @@ namespace ETradeBackend.Persistance.Services
             }
 
             throw new Exception("");
+        }
+
+        public async Task<bool> HasRolePermissionToEndpointAsync(string userName, string code)
+        {
+            var userRoles = await GetRolesToUserAsync(userName);
+
+            if (!userRoles.Any()) return false;
+
+            Endpoint? endpoint = await _endpointReadRepository.Table
+                .Include(e => e.Roles)
+                .FirstOrDefaultAsync(e => e.Code == code);
+
+            if (endpoint == null) return false;
+
+            var hasRole = false;
+            var endpointRoles = endpoint?.Roles.Select(r => r.Name);
+
+            foreach (var userRole in userRoles)
+                foreach (var endpointRole in endpointRoles)
+                    if (userRole == endpointRole)
+                        return true;
+            return false;
         }
     }
 }

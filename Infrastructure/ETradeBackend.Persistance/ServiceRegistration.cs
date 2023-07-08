@@ -46,6 +46,7 @@ namespace ETradeBackend.Persistance
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireUppercase = false;
+                    options.User.AllowedUserNameCharacters = null;
 
                 }).AddEntityFrameworkStores<ETradeDbContext>()
                 .AddDefaultTokenProviders();
@@ -82,6 +83,7 @@ namespace ETradeBackend.Persistance
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
+            services.AddScoped<IProductService, ProductService>();
         }
     }
 }

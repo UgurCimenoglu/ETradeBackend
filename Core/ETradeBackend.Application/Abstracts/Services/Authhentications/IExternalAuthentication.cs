@@ -10,5 +10,6 @@ namespace ETradeBackend.Application.Abstracts.Services.Authhentications
     {
         Task<DTOs.Token> FacebookLoginAsync(string authToken);
         Task<DTOs.Token> GoogleLoginAsync(string idToken);
+        Task<DTOs.Token> GoogleLoginV2Async(string code);
     }
 }

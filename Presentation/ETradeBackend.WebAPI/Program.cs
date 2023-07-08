@@ -12,6 +12,7 @@ using System.Text;
 using ETradeBackend.SignalR;
 using ETradeBackend.WebAPI.Configuraitons.ColumnWriters;
 using ETradeBackend.WebAPI.Extensions;
+using ETradeBackend.WebAPI.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Serilog.Context;
@@ -31,7 +32,7 @@ builder.Services.AddStorage<LocalStorage>();
 //builder.Services.AddStorage(StorageType.Local);
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
+    policy.WithOrigins("http://localhost:4200", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
 Logger log = new LoggerConfiguration()
     .WriteTo.Console()
@@ -59,7 +60,11 @@ builder.Host.UseSerilog(log);
 // olarak fluent validasyon kullanacak dedik. RegisterValidatorsFromAssemblyContaining diyerek programýn assembly seviyesindeki bütün FluentValidation kullanan sýnýflarýný tarayýp sisteme dahil edecek.
 // Sonuç olarak biz AbstractValidator<> sýnýfýndan türetilmiþ her bir validation nesnemizi sisteme otomatik tanýtmýþ olacaðýz ve 1. Satýrdaki ValidationFilter ile valide olmayan alanlarý seçip
 // dönüþ olarak errorlarý döneceðiz.
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<ValidationFilter>();
+        options.Filters.Add<RolePermissionFilter>();
+    })
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 builder.Services.AddEndpointsApiExplorer();

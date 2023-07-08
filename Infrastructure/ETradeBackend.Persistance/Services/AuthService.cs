@@ -9,10 +9,12 @@ using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using System.Text.Json;
 using ETradeBackend.Application.Helpers;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using ETradeBackend.Application.DTOs.Google;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ETradeBackend.Persistance.Services
 {
@@ -110,6 +112,27 @@ namespace ETradeBackend.Persistance.Services
 
             return await CreateExternalUserAsync(appUser, payload.Email, payload.Name, info);
 
+        }
+
+        //Aşağıdaki method google servisinden token oluşturmak için kodlandı. Yeni npm paketlerinde google loginden dönen bir jwt değeri yok, google login işlemi bize bir code veriyor
+        //bu code ile başka bir servise istek atmamız gerekiyor ve bu istek sonucunda google tarafından jwt oluşturabiliyoruz.
+        public async Task<Token> GoogleLoginV2Async(string code)
+        {
+            CreateGoogleJwtRequestDto googleReqData = new CreateGoogleJwtRequestDto()
+            {
+                code = code,
+                client_id = _configuration["ExternalLoginSettings:Google:Client_ID"],
+                client_secret = _configuration["ExternalLoginSettings:Google:Client_Secret"],
+                redirect_uri = _configuration["ExternalLoginSettings:Google:Redirect_Uri"],
+                grant_type = "authorization_code"
+            };
+            var response = await _httpClient.PostAsync("https://oauth2.googleapis.com/token",
+                 new StringContent(JsonConvert.SerializeObject(googleReqData), Encoding.UTF8, "application/json"));
+
+            var googleJsonResult = await response.Content.ReadAsStringAsync();
+            CreateGoogleJwtResponse? googleResult = JsonSerializer.Deserialize<CreateGoogleJwtResponse>(googleJsonResult);
+            if (googleResult != null) return await GoogleLoginAsync(googleResult.id_token);
+            throw new Exception("Geçersiz Kod!");
         }
 
         public async Task PasswordResetAsync(string email)

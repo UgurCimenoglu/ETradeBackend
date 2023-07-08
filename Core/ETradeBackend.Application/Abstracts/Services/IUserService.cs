@@ -16,6 +16,9 @@ namespace ETradeBackend.Application.Abstracts.Services
         Task<List<ListUser>> GetAllUsersAsync(int page, int size);
         int TotalUsersCount { get; }
         Task AssignRoleToUserAsync(string userId, string[] roles);
-        Task<List<string>> GetRolesToUserAsync(string userId);
+        Task<List<string>> GetRolesToUserAsync(string userIdOrName);
+        Task<bool> HasRolePermissionToEndpointAsync(string userName, string code);
+
+
     }
 }

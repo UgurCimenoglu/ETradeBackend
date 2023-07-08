@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using ETradeBackend.Application.Abstracts.Services;
 
 namespace ETradeBackend.WebAPI.Controllers
 {
@@ -30,10 +31,12 @@ namespace ETradeBackend.WebAPI.Controllers
     [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
-        readonly IMediator _mediator;
-        public ProductsController(IMediator mediator)
+        private readonly IMediator _mediator;
+        private readonly IProductService _productService;
+        public ProductsController(IMediator mediator, IProductService productService)
         {
             _mediator = mediator;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -109,6 +112,14 @@ namespace ETradeBackend.WebAPI.Controllers
         {
             var response = await _mediator.Send(request);
             return Ok(response);
+        }
+
+        [HttpGet("qrcode/{productId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetQRCodeToProduct([FromRoute] string productId)
+        {
+            var data = await _productService.QRCodeToProductAsync(productId);
+            return File(data, "image/png");
         }
     }
 

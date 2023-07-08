@@ -1,5 +1,6 @@
 ﻿using ETradeBackend.Application.Features.Commands.AppUser.FacebookLogin;
 using ETradeBackend.Application.Features.Commands.AppUser.GoogleLogin;
+using ETradeBackend.Application.Features.Commands.AppUser.GoogleLoginV2;
 using ETradeBackend.Application.Features.Commands.AppUser.LoginUser;
 using ETradeBackend.Application.Features.Commands.AppUser.PasswordReset;
 using ETradeBackend.Application.Features.Commands.AppUser.RefreshTokenLogin;
@@ -31,6 +32,13 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin(GoogleLoginCommandRequest request)
+        {
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+
+        [HttpPost("google-login-v2")]
+        public async Task<IActionResult> GoogleLoginV2(GoogleLoginV2CommandRequest request)
         {
             var result = await _mediator.Send(request);
             return Ok(result);
