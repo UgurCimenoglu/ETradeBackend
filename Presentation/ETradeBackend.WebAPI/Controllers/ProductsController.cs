@@ -48,7 +48,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("{Id}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest request)
         {
             var result = await _mediator.Send(request);
