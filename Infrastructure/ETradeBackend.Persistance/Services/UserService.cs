@@ -55,7 +55,7 @@ namespace ETradeBackend.Persistance.Services
             {
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenEndDate = accessTokenDateTime.AddMinutes(refreshTokenLifeTimeMinutes);
-                await _userManager.UpdateAsync(user);
+               var result =  await _userManager.UpdateAsync(user);
             }
             else
                 throw new NotFoundUserException();

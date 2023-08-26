@@ -51,8 +51,8 @@ namespace ETradeBackend.Persistance.Services
             var result = await _signInManager.CheckPasswordSignInAsync(appUser, password, false);
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAccessToken(appUser, tokenExpirationMinute: 30);
-                await _userService.UpdateRefreshTokenAsync(appUser, token.RefreshToken, token.Expiration, 30);
+                Token token = _tokenHandler.CreateAccessToken(appUser, 60);
+                await _userService.UpdateRefreshTokenAsync(appUser, token.RefreshToken, token.Expiration, 60);
                 //Todo yetkiler
                 return token;
             }
@@ -189,20 +189,20 @@ namespace ETradeBackend.Persistance.Services
             }
             if (result)
             {
-                Token token = _tokenHandler.CreateAccessToken(appUser, tokenExpirationMinute: 30);
-                await _userService.UpdateRefreshTokenAsync(appUser, token.RefreshToken, token.Expiration, 30);
+                Token token = _tokenHandler.CreateAccessToken(appUser, tokenExpirationMinute: 60);
+                await _userService.UpdateRefreshTokenAsync(appUser, token.RefreshToken, token.Expiration, 60);
                 return token;
             }
             throw new Exception("Invalid External Authentication");
         }
 
         public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
-        {
+            {
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                Token token = _tokenHandler.CreateAccessToken(user, 30);
-                await _userService.UpdateRefreshTokenAsync(user, token.RefreshToken, token.Expiration, 30);
+                Token token = _tokenHandler.CreateAccessToken(user, 60);
+                await _userService.UpdateRefreshTokenAsync(user, token.RefreshToken, token.Expiration, 60);
                 return token;
             }
             else

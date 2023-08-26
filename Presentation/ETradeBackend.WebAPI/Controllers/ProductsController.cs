@@ -47,6 +47,14 @@ namespace ETradeBackend.WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("[action]")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Reading, Definition = "Get Product")]
+        public async Task<IActionResult> GetAllForAdmin([FromQuery] GetAllProductsQueryRequest request)
+        {
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+
         [HttpGet("{Id}")]
         //[AllowAnonymous]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest request)
