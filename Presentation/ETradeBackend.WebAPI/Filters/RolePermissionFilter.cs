@@ -21,24 +21,33 @@ namespace ETradeBackend.WebAPI.Filters
         {
 
             var name = context.HttpContext.User.Identity?.Name;
+
+            var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
+
+            var attribute = descriptor?.MethodInfo
+                .GetCustomAttribute(typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
+
             if (!string.IsNullOrEmpty(name) && name != "Ugur")
             {
-                var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
-                var attribute = descriptor?.MethodInfo
-                            .GetCustomAttribute(typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
-
+                if (attribute == null)
+                {
+                    await next();
+                }
                 var httpAttribute = descriptor?.MethodInfo.GetCustomAttribute(typeof(HttpMethodAttribute)) as HttpMethodAttribute;
 
                 var code = $"{(httpAttribute != null ? httpAttribute.HttpMethods.First() : HttpMethods.Get)}.{attribute?.ActionType}.{attribute?.Definition.Replace(" ", "")}";
                 bool hasRole = await _userService.HasRolePermissionToEndpointAsync(name, code);
                 if (!hasRole)
-                    context.Result = new UnauthorizedResult();
+                    context.Result = new ObjectResult("Yetkisiz Istek") { StatusCode = 403 };
 
                 else
                     await next();
             }
             else
-                await next();
+            {
+                if (attribute == null) await next();
+                else context.Result = new UnauthorizedResult();
+            }
         }
     }
 }

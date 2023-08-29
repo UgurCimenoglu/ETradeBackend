@@ -9,7 +9,7 @@ namespace ETradeBackend.Application.Features.Queries.Product.GetAllProductsByQue
 {
     public class GetAllProductByQueryRequest : IRequest<GetAllProductByQueryResponse>
     {
-        public string q { get; set; }
+        public string Q { get; set; }
         public int Page { get; set; } = 0;
         public int Size { get; set; } = 5;
     }

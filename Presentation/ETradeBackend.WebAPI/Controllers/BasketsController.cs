@@ -24,7 +24,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Reading, Definition = "Get Basket Items")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Reading, Definition = "Get Basket Items")]
         public async Task<IActionResult> GetBasketItems([FromQuery] GetBasketItemsQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -32,7 +32,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Reading, Definition = "Add Item To Basket")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Reading, Definition = "Add Item To Basket")]
         public async Task<IActionResult> AddItemToBasket(AddItemToBasketCommandRequest request)
         {
             var result = await _mediator.Send(request);
@@ -40,7 +40,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPut]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Updating, Definition = "Update Basket Item Quantity")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Updating, Definition = "Update Basket Item Quantity")]
         public async Task<IActionResult> UpdateBasketItemQuantity(UpdateBasketItemQuantityCommandRequest request)
         {
             var result = await _mediator.Send(request);
@@ -48,7 +48,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpDelete("{BasketItemId}")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Deleting, Definition = "Remove Item To Basket")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Basket, ActionType = ActionType.Deleting, Definition = "Remove Item To Basket")]
         public async Task<IActionResult> RemoveItemToBasket([FromRoute] RemoveItemToBasketCommandRequest request)
         {
             var result = await _mediator.Send(request);

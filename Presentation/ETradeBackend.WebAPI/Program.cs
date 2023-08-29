@@ -74,7 +74,7 @@ builder.Services.AddSwaggerGen(c =>
     c.DescribeAllParametersInCamelCase();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
+        Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer ...token')",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -114,7 +114,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
             NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimine karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
         })
-    .AddJwtBearer("Manav", options => options.TokenValidationParameters = new()
+    .AddJwtBearer("Customer", options => options.TokenValidationParameters = new()
     {
         ValidateAudience =
                 true, //oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacagýný belirlediðimiz deðerdir. Örn www.ugurcimen.com

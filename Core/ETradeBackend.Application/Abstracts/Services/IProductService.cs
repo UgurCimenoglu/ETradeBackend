@@ -9,7 +9,10 @@ namespace ETradeBackend.Application.Abstracts.Services
 {
     public interface IProductService
     {
-        ListProductDto GetProductListAsync(int page, int size);
+        ListProductDto GetProductList(int page, int size);
+
+        ListProductByQueryDto GetProductListByQuery(int page, int size, string? query);
+
         Task<byte[]> QRCodeToProductAsync(string productId);
     }
 }

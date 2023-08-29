@@ -23,9 +23,9 @@ namespace ETradeBackend.Application.Features.Queries.Product.GetAllProducts
 
         public async Task<GetAllProductsQueryResponse> Handle(GetAllProductsQueryRequest request, CancellationToken cancellationToken)
         {
-            var response = _productService.GetProductListAsync(request.Page, request.Size);
+            var response = _productService.GetProductList(request.Page, request.Size);
             return new() { Products = response.Products, TotalCount = response.TotalCount };
-            
+
         }
     }
 }

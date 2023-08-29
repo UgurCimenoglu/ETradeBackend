@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using ETradeBackend.Application.Abstracts.Services;
+using ETradeBackend.Application.Features.Queries.Product.GetAllProductsByQuery;
 
 namespace ETradeBackend.WebAPI.Controllers
 {
@@ -48,6 +49,15 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("[action]")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllByQuery([FromQuery] GetAllProductByQueryRequest request)
+        {
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+
+
+        [HttpGet("[action]")]
         [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Reading, Definition = "Get Product")]
         public async Task<IActionResult> GetAllForAdmin([FromQuery] GetAllProductsQueryRequest request)
         {
@@ -56,7 +66,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet("{Id}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -98,7 +108,7 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpGet("[action]/{id}")]
         [AllowAnonymous]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Reading, Definition = "Get Product Images")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Reading, Definition = "Get Product Images")]
         public async Task<IActionResult> GetProductImages([FromRoute] GetProductImageQueryRequest request)
         {
             var result = await _mediator.Send(request);
