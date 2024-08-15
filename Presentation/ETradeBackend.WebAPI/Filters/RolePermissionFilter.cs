@@ -27,12 +27,13 @@ namespace ETradeBackend.WebAPI.Filters
             var attribute = descriptor?.MethodInfo
                 .GetCustomAttribute(typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
 
+            if (attribute == null)
+            {
+                await next();
+            }
+
             if (!string.IsNullOrEmpty(name) && name != "Ugur")
             {
-                if (attribute == null)
-                {
-                    await next();
-                }
                 var httpAttribute = descriptor?.MethodInfo.GetCustomAttribute(typeof(HttpMethodAttribute)) as HttpMethodAttribute;
 
                 var code = $"{(httpAttribute != null ? httpAttribute.HttpMethods.First() : HttpMethods.Get)}.{attribute?.ActionType}.{attribute?.Definition.Replace(" ", "")}";
@@ -43,10 +44,10 @@ namespace ETradeBackend.WebAPI.Filters
                 else
                     await next();
             }
-            else
+            else if (!string.IsNullOrEmpty(name) && name == "Ugur")
             {
-                if (attribute == null) await next();
-                else context.Result = new UnauthorizedResult();
+                await next();
+
             }
         }
     }

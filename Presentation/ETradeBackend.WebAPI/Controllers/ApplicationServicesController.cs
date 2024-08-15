@@ -21,7 +21,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpGet]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.ApplicationServices, ActionType = ActionType.Reading, Definition = "Get Authorize Definition Endpoints")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.ApplicationServices, ActionType = ActionType.Reading, Definition = "Get Authorize Definition Endpoints")]
         public IActionResult GetAuthorizeDefinitionEndpoints()
         {
             var result = _applicationService.GetAuthorizationDefinitionEndpoints(typeof(Program));

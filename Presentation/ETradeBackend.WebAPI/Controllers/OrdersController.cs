@@ -25,7 +25,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = ActionType.Writing, Definition = "Create Order")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = ActionType.Writing, Definition = "Create Order")]
         public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
         {
             var result = await _mediator.Send(request);

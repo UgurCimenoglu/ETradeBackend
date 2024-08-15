@@ -14,8 +14,16 @@ namespace ETradeBackend.Persistance
             get
             {
                 ConfigurationManager configurationManager = new();
-                configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ETradeBackend.WebAPI"));
-                configurationManager.AddJsonFile("appsettings.json");
+                try
+                {
+                    configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ETradeBackend.WebAPI"));
+                    configurationManager.AddJsonFile("appsettings.json");
+                    return configurationManager.GetConnectionString("PostgreSQL");
+                }
+                catch
+                {
+                    configurationManager.AddJsonFile("appsettings.Production.json");
+                }
                 return configurationManager.GetConnectionString("PostgreSQL");
             }
         }

@@ -7,8 +7,8 @@ using ETradeBackend.Application.Features.Commands.AppUser.RefreshTokenLogin;
 using ETradeBackend.Application.Features.Commands.AppUser.UpdatePassword;
 using ETradeBackend.Application.Features.Commands.AppUser.VerifyPasswordResetToken;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace ETradeBackend.WebAPI.Controllers
 {

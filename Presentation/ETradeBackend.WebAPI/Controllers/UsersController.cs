@@ -1,4 +1,5 @@
 ﻿using ETradeBackend.Application.Abstracts.Services;
+using ETradeBackend.Application.Constants;
 using ETradeBackend.Application.CustomAttributes;
 using ETradeBackend.Application.Enums;
 using ETradeBackend.Application.Features.Commands.AppUser.AssignRoleToUser;
@@ -37,7 +38,7 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Get All Users", Menu = "Users")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Users, ActionType = ActionType.Reading, Definition = "Get All Users")]
         public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -46,7 +47,7 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpGet("get-roles-to-user/{UserId}")]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Get Roles To User", Menu = "Users")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Users, ActionType = ActionType.Reading, Definition = "Get Roles To User")]
         public async Task<IActionResult> GetRolesToUser([FromRoute] GetRolesToUserQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -56,7 +57,7 @@ namespace ETradeBackend.WebAPI.Controllers
 
         [HttpPost("assign-role-to-user")]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(ActionType = ActionType.Writing, Definition = "Assign Role To User", Menu = "Users")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Users, ActionType = ActionType.Writing, Definition = "Assign Role To User")]
         public async Task<IActionResult> AssignRoleToUser(AssignRoleToUserCommandRequest request)
         {
             var response = await _mediator.Send(request);

@@ -1,4 +1,7 @@
-﻿using ETradeBackend.Application.Features.Commands.AuthorizationEndpoint.AssignRoleEndpoint;
+﻿using ETradeBackend.Application.Constants;
+using ETradeBackend.Application.CustomAttributes;
+using ETradeBackend.Application.Enums;
+using ETradeBackend.Application.Features.Commands.AuthorizationEndpoint.AssignRoleEndpoint;
 using ETradeBackend.Application.Features.Queries.AuthorizationEndpoint.GetRolesToEndpoint;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +21,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        //[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.AuthorizationEndpoints, ActionType = ActionType.Reading, Definition = "Get Roles To Endpoint")]
         public async Task<IActionResult> GetRolesToEndpoint(GetRolesToEndpointQueryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -25,6 +29,7 @@ namespace ETradeBackend.WebAPI.Controllers
         }
 
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.AuthorizationEndpoints, ActionType = ActionType.Writing, Definition = "Assign Role Endpoint")]
         public async Task<IActionResult> AssignRoleEndpoint(AssignRoleEndpointCommandRequest request)
         {
             request.Type = typeof(Program);
